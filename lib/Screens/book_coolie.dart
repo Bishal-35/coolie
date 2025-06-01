@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:twilio_flutter/twilio_flutter.dart';
+// import 'package:twilio_flutter/twilio_flutter.dart';
 
 class BookCoolie extends StatefulWidget {
   @override
@@ -15,13 +15,7 @@ class _BookCoolieState extends State<BookCoolie> {
   final List<String> _stations = ["Raipur", "Durg"];
   String? _selectedStation;
 
-  // final TwilioFlutter twilioFlutter = TwilioFlutter(
-  //     accountSid:
-  //         'AC30b995b3e52406448c0a79e9c002dbda', // Replace with your Account SID
-  //     authToken:
-  //         '07aa2a1f24bc81392d8a72d981cfaf2b', // Replace with your Auth Token
-  //     twilioNumber: '+12319744183' // Replace with your Twilio Number
-  //     );
+  //init twilio
 
   bool isLoading = false;
   final TextEditingController _weightController = TextEditingController();
@@ -43,26 +37,7 @@ class _BookCoolieState extends State<BookCoolie> {
     super.dispose();
   }
 
-  // Future<void> _pickTime() async {
-  //   final TimeOfDay? time = await showTimePicker(
-  //     context: context,
-  //     initialTime: TimeOfDay.now(),
-  //   );
-  //   if (time != null) {
-  //     final now = DateTime.now();
-  //     final selected =
-  //         DateTime(now.year, now.month, now.day, time.hour, time.minute);
-  //     _selectedTime = DateFormat.jm().format(selected);
-  //     setState(() {});
-  //   }
-  // }
-  // onPressed: () async {
-  //                   TwilioResponse response = await twilioFlutter.sendSMS(
-  //                       toNumber:
-  //                           '+919560952125', // Replace with recipient's number
-  //                       messageBody: 'Hello from Flutter!');
-  //                   print(response.responseCode); // Check the status of the SMS
-  //                 },
+  
 
   final List<String> _locations = ["Entry Gate", "Platform No.1"];
   String? _pickupPoint;
