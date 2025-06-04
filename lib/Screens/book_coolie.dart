@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 // import 'package:twilio_flutter/twilio_flutter.dart';
 
 class BookCoolie extends StatefulWidget {
+  const BookCoolie({super.key});
+
   @override
   State<BookCoolie> createState() => _BookCoolieState();
 }
@@ -19,6 +21,8 @@ class _BookCoolieState extends State<BookCoolie> {
 
   bool isLoading = false;
   final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _numberOfCooliesController =
+      TextEditingController(text: "1");
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _trainNameController = TextEditingController();
   final TextEditingController _trainNumberController = TextEditingController();
@@ -29,6 +33,7 @@ class _BookCoolieState extends State<BookCoolie> {
   @override
   void dispose() {
     _weightController.dispose();
+    _numberOfCooliesController.dispose();
     _trainNameController.dispose();
     _trainNumberController.dispose();
     _coachNumberController.dispose();
@@ -37,18 +42,83 @@ class _BookCoolieState extends State<BookCoolie> {
     super.dispose();
   }
 
-  
+  // Location lists for each station
+  final Map<String, List<String>> _stationLocations = {
+    "Raipur": [
+      "Central Entrance Gate",
+      "VIP Entrance gate",
+      "A1 Entrance Gate",
+      "Central Entry Gate PF-7 Side",
+      "Platform No.1",
+      "Platform No.2",
+      "Platform No.3",
+      "Platform No.4",
+      "Platform No.5",
+      "Platform No.6",
+      "Platform No.7",
+    ],
+    "Durg": [
+      "Main Entrance Gate",
+      "Platform No.1",
+      "Platform No.2",
+      "Platform No.3",
+      "Platform No.4",
+      "Platform No.5",
+      "Platform No.6",
+    ],
+  };
 
-  final List<String> _locations = ["Entry Gate", "Platform No.1"];
+  // Get filtered locations based on selected station
+  List<String> get _filteredLocations {
+    if (_selectedStation == null) return [];
+    return _stationLocations[_selectedStation] ?? [];
+  }
+
   String? _pickupPoint;
   String? _dropPoint;
   int? _fee;
 
   void _onWeightChanged(String value) {
     if (value.isNotEmpty) {
+      try {
+        int weight = int.parse(value);
+        _calculateFee();
+      } catch (e) {
+        setState(() {
+          _fee = null;
+        });
+      }
+    } else {
       setState(() {
-        _fee = 100; // Flat rate logic or can be made dynamic
+        _fee = null;
       });
+    }
+  }
+
+  void _onCoolieCountChanged(String value) {
+    _calculateFee();
+  }
+
+  void _calculateFee() {
+    if (_weightController.text.isNotEmpty) {
+      try {
+        int weight = int.parse(_weightController.text);
+        int coolieCount = int.parse(
+          _numberOfCooliesController.text.isEmpty
+              ? "1"
+              : _numberOfCooliesController.text,
+        );
+
+        setState(() {
+          // Calculate fee: 100 Rs per 40 kg (or part thereof) multiplied by number of coolies
+          int units = (weight / 40).ceil(); // Round up to handle partial units
+          _fee = units * 100 * coolieCount;
+        });
+      } catch (e) {
+        setState(() {
+          _fee = null;
+        });
+      }
     } else {
       setState(() {
         _fee = null;
@@ -66,14 +136,16 @@ class _BookCoolieState extends State<BookCoolie> {
         _trainNameController.text.isEmpty ||
         _trainNumberController.text.isEmpty ||
         _coachNumberController.text.isEmpty ||
-        _seatNumberController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all fields.')),
-      );
+        _seatNumberController.text.isEmpty ||
+        _numberOfCooliesController.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Please fill in all fields.')));
       return;
     }
 
-    String message = '''
+    String message =
+        '''
       You have a Passenger:
 
       Pickup Point: $_pickupPoint
@@ -91,7 +163,7 @@ class _BookCoolieState extends State<BookCoolie> {
     //   toNumber: '+919560952125',
     //   messageBody: message,
     // );
-    print('$message');
+    print(message);
 
     // TwilioResponse response = await twilioFlutter.sendSMS(
     //     toNumber: '+919560952125',
@@ -146,28 +218,28 @@ class _BookCoolieState extends State<BookCoolie> {
         'coachNumber': _coachNumberController.text,
         'seatNumber': _seatNumberController.text,
         'weight': _weightController.text,
+        'numberOfCoolies': _numberOfCooliesController.text,
         'fee': _fee,
         'timestamp': FieldValue.serverTimestamp(),
         'coolie_assigned': coolieId,
         'coolie_name': coolieName,
         'coolie_number': cooliePhone,
         'coolie_bill_number': coolieBillNo,
-        'status':'Arriving at Your Location',
+        'status': 'Arriving at Your Location',
         // 'doc_id':
       };
 
-        final docRef = FirebaseFirestore.instance.collection('coolie_bookings').doc();
-        bookingData['doc_id'] = docRef.id;
+      final docRef = FirebaseFirestore.instance
+          .collection('coolie_bookings')
+          .doc();
+      bookingData['doc_id'] = docRef.id;
 
-        await docRef.set(bookingData);
+      await docRef.set(bookingData);
 
       await FirebaseFirestore.instance
           .collection('coolie_list')
           .doc(coolieId)
-          .update({
-        'Available': false,
-        'passenger_assigned': user?.uid,
-      });
+          .update({'Available': false, 'passenger_assigned': user?.uid});
       setState(() {
         isLoading = false;
       });
@@ -185,8 +257,9 @@ class _BookCoolieState extends State<BookCoolie> {
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -195,10 +268,7 @@ class _BookCoolieState extends State<BookCoolie> {
               const Text(
                 'Your Sahayak has been booked!',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               const SizedBox(height: 12),
               Text('Name:$coolieName'),
@@ -209,20 +279,18 @@ class _BookCoolieState extends State<BookCoolie> {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                 child: const Text('OK'),
-              )
+              ),
             ],
           ),
         ),
       );
     } catch (e) {
       print('Error sending SMS: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to send request.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Failed to send request.')));
     }
   }
 
@@ -258,24 +326,25 @@ class _BookCoolieState extends State<BookCoolie> {
           children: [
             const Text(
               'Fields with * are mandatory',
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.red, fontSize: 14),
             ),
             const SizedBox(height: 16),
-            Row(children: [
-              Expanded(
-                child: TextField(
-                  controller: _nameController,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    labelText: 'Passenger Name',
-                    border: OutlineInputBorder(),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _nameController,
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: 'Passenger Name',
+                      border: borderStyle,
+                      enabledBorder: borderStyle,
+                      focusedBorder: borderStyle,
+                    ),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             const SizedBox(height: 16),
 
             DropdownButtonFormField<String>(
@@ -287,41 +356,48 @@ class _BookCoolieState extends State<BookCoolie> {
                 labelText: 'Select Station *',
               ),
               items: _stations
-                  .map((station) => DropdownMenuItem(
-                        value: station,
-                        child: Text(station),
-                      ))
+                  .map(
+                    (station) =>
+                        DropdownMenuItem(value: station, child: Text(station)),
+                  )
                   .toList(),
               onChanged: (value) {
                 setState(() {
                   _selectedStation = value;
+                  // Reset pickup and drop points when station changes
+                  _pickupPoint = null;
+                  _dropPoint = null;
                 });
               },
             ),
 
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-                value: _pickupPoint,
-                decoration: InputDecoration(
-                  border: borderStyle,
-                  enabledBorder: borderStyle,
-                  focusedBorder: borderStyle,
-                  labelText: 'Select Pickup Point *',
-                ),
-                items: _locations
-                    .where(
-                        (loc) => loc != _dropPoint) // Filter out selected drop
-                    .map((location) => DropdownMenuItem(
-                          value: location,
-                          child: Text(location),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _pickupPoint = value;
-                    if (_pickupPoint == _dropPoint) _dropPoint = null;
-                  });
-                }),
+              value: _pickupPoint,
+              decoration: InputDecoration(
+                border: borderStyle,
+                enabledBorder: borderStyle,
+                focusedBorder: borderStyle,
+                labelText: 'Select Pickup Point *',
+              ),
+              items: _filteredLocations
+                  .where((loc) => loc != _dropPoint) // Filter out selected drop
+                  .map(
+                    (location) => DropdownMenuItem(
+                      value: location,
+                      child: Text(location),
+                    ),
+                  )
+                  .toList(),
+              onChanged: _selectedStation == null
+                  ? null
+                  : (value) {
+                      setState(() {
+                        _pickupPoint = value;
+                        if (_pickupPoint == _dropPoint) _dropPoint = null;
+                      });
+                    },
+            ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: _dropPoint,
@@ -331,20 +407,25 @@ class _BookCoolieState extends State<BookCoolie> {
                 focusedBorder: borderStyle,
                 labelText: 'Select Drop Point *',
               ),
-              items: _locations
-                  .where((loc) =>
-                      loc != _pickupPoint) // Filter out selected pickup
-                  .map((location) => DropdownMenuItem(
-                        value: location,
-                        child: Text(location),
-                      ))
+              items: _filteredLocations
+                  .where(
+                    (loc) => loc != _pickupPoint,
+                  ) // Filter out selected pickup
+                  .map(
+                    (location) => DropdownMenuItem(
+                      value: location,
+                      child: Text(location),
+                    ),
+                  )
                   .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _dropPoint = value;
-                  if (_pickupPoint == _dropPoint) _pickupPoint = null;
-                });
-              },
+              onChanged: _selectedStation == null
+                  ? null
+                  : (value) {
+                      setState(() {
+                        _dropPoint = value;
+                        if (_pickupPoint == _dropPoint) _pickupPoint = null;
+                      });
+                    },
             ),
             const SizedBox(height: 16),
             Row(
@@ -356,9 +437,42 @@ class _BookCoolieState extends State<BookCoolie> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       labelText: 'Weight of Luggage (kg)',
-                      border: OutlineInputBorder(),
+                      border: borderStyle,
+                      enabledBorder: borderStyle,
+                      focusedBorder: borderStyle,
                     ),
                     onChanged: _onWeightChanged,
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: TextField(
+                    controller: _numberOfCooliesController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(
+                      labelText: 'Number of Coolies Required',
+                      border: borderStyle,
+                      enabledBorder: borderStyle,
+                      focusedBorder: borderStyle,
+                    ),
+                    onChanged: _onCoolieCountChanged,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _trainNameController,
+                    decoration: InputDecoration(
+                      border: borderStyle,
+                      enabledBorder: borderStyle,
+                      focusedBorder: borderStyle,
+                      labelText: 'Train Name/Train Nunmber',
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -382,43 +496,18 @@ class _BookCoolieState extends State<BookCoolie> {
                           final hour = pickedTime.hourOfPeriod
                               .toString()
                               .padLeft(2, '0');
-                          final minute =
-                              pickedTime.minute.toString().padLeft(2, '0');
-                          final period =
-                              pickedTime.period == DayPeriod.am ? 'AM' : 'PM';
+                          final minute = pickedTime.minute.toString().padLeft(
+                            2,
+                            '0',
+                          );
+                          final period = pickedTime.period == DayPeriod.am
+                              ? 'AM'
+                              : 'PM';
                           _timeController.text = '$hour:$minute $period';
                           _selectedTime = '$hour:$minute $period';
                         });
                       }
                     },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _trainNameController,
-                    decoration: InputDecoration(
-                      border: borderStyle,
-                      enabledBorder: borderStyle,
-                      focusedBorder: borderStyle,
-                      labelText: 'Train Name',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    controller: _trainNumberController,
-                    decoration: InputDecoration(
-                      border: borderStyle,
-                      enabledBorder: borderStyle,
-                      focusedBorder: borderStyle,
-                      labelText: 'Train Number',
-                    ),
                   ),
                 ),
               ],
@@ -485,8 +574,6 @@ class _BookCoolieState extends State<BookCoolie> {
                 ),
               ),
             ),
-
-
           ],
         ),
       ),

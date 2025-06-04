@@ -5,14 +5,14 @@ import 'package:url_launcher/url_launcher.dart';
 class CoolieBookingInfoScreen extends StatefulWidget {
   final Map<String, dynamic> bookingData;
 
-  const CoolieBookingInfoScreen({Key? key, required this.bookingData}) : super(key: key);
+  const CoolieBookingInfoScreen({super.key, required this.bookingData});
 
   @override
-  _CoolieBookingInfoScreenState createState() => _CoolieBookingInfoScreenState();
+  _CoolieBookingInfoScreenState createState() =>
+      _CoolieBookingInfoScreenState();
 }
 
 class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
-  
   void _makePhoneCall(String phoneNumber) async {
     final Uri url = Uri(scheme: 'tel', path: phoneNumber);
     if (await canLaunchUrl(url)) {
@@ -45,7 +45,8 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
             .doc(bookingId)
             .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+          if (!snapshot.hasData)
+            return Center(child: CircularProgressIndicator());
 
           final data = snapshot.data!.data() as Map<String, dynamic>?;
 
@@ -80,7 +81,9 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
                           _makePhoneCall(phoneNumber);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Phone number not available")),
+                            SnackBar(
+                              content: Text("Phone number not available"),
+                            ),
                           );
                         }
                       },
@@ -89,74 +92,108 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
                 ),
 
                 SizedBox(height: 12),
-                infoRow(Icons.person, "Coolie Name : ${data['coolie_name'] ?? ''}"),
-                infoRow(Icons.confirmation_number, "Batch Id : ${data['coolie_bill_number'] ?? ''}"),
-                infoRow(Icons.train, "Coach Number : ${data['coachNumber'] ?? ''}"),
+                infoRow(
+                  Icons.person,
+                  "Coolie Name : ${data['coolie_name'] ?? ''}",
+                ),
+                infoRow(
+                  Icons.confirmation_number,
+                  "Batch Id : ${data['coolie_bill_number'] ?? ''}",
+                ),
+                infoRow(
+                  Icons.train,
+                  "Coach Number : ${data['coachNumber'] ?? ''}",
+                ),
                 infoRow(Icons.access_time, "${data['time'] ?? ''}"),
-                infoRow(Icons.location_on, "Pickup ${data['pickupPoint'] ?? ''}"),
+                infoRow(
+                  Icons.location_on,
+                  "Pickup ${data['pickupPoint'] ?? ''}",
+                ),
                 infoRow(Icons.currency_rupee, "${data['fee'] ?? ''}"),
                 infoRow(Icons.assignment, "${data['Category'] ?? 'COOLIE'}"),
-                infoRow(Icons.location_on_outlined, "Drop Point : ${data['dropPoint'] ?? ''}"),
+                infoRow(
+                  Icons.location_on_outlined,
+                  "Drop Point : ${data['dropPoint'] ?? ''}",
+                ),
                 infoRow(Icons.line_weight, "Weight : ${data['weight'] ?? ''}"),
-                infoRow(Icons.confirmation_number_rounded, "Booking Id: ${data['Booking Id'] ?? ''}"),
+                infoRow(
+                  Icons.confirmation_number_rounded,
+                  "Booking Id: ${data['Booking Id'] ?? ''}",
+                ),
                 infoRow(Icons.train, "Train Name: ${data['trainName'] ?? ''}"),
                 SizedBox(height: 20),
 
                 /// Action Button based on Status
                 if (currentStatus == 'Arriving at Your Location')
                   SizedBox(
-                      width: double.infinity,
-                      height: 48,
+                    width: double.infinity,
+                    height: 48,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:  Colors.deepOrange,
+                        backgroundColor: Colors.deepOrange,
                         shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       onPressed: () => _updateStatus('Coolie Arrived'),
-                      child: Text("Coolie Arrived",style: TextStyle(color: Colors.white),),
+                      child: Text(
+                        "Coolie Arrived",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   )
                 else if (currentStatus == 'Coolie Arrived')
                   SizedBox(
                     width: double.infinity,
-                      height: 48,
+                    height: 48,
                     child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                        backgroundColor:  Colors.deepOrange,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepOrange,
                         shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       onPressed: () => _updateStatus('Service Complete'),
-                      child: Text("Service Complete",style: TextStyle(color: Colors.white),),
+                      child: Text(
+                        "Service Complete",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   )
                 else if (currentStatus == 'Service Complete')
-                  Text(
-                   'Service Completed'
-                  ),
-                                  SizedBox(height: 20),
+                  Text('Service Completed'),
+                SizedBox(height: 20),
 
-              if (currentStatus != 'Service Complete' && currentStatus != 'Cancelled')
-                SizedBox(
-                   width: double.infinity,
-                      height: 48,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                if (currentStatus != 'Service Complete' &&
+                    currentStatus != 'Cancelled')
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () => _updateStatus('Cancelled'),
+                      child: Text(
+                        "Cancel Booking",
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    onPressed: () => _updateStatus('Cancelled'),
-                    child: Text("Cancel Booking", style: TextStyle(color: Colors.white)),
                   ),
-                ),
 
-              if (currentStatus == 'Cancelled')
-                Center(child: Text('Booking Cancelled', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
+                if (currentStatus == 'Cancelled')
+                  Center(
+                    child: Text(
+                      'Booking Cancelled',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
               ],
             ),
           );

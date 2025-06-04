@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FeedbackComplaintScreen extends StatefulWidget {
-  const FeedbackComplaintScreen({Key? key}) : super(key: key);
+  const FeedbackComplaintScreen({super.key});
 
   @override
   State<FeedbackComplaintScreen> createState() =>
@@ -20,7 +20,7 @@ class _FeedbackComplaintScreenState extends State<FeedbackComplaintScreen> {
     'Complaint',
     'Feedback',
     'Suggestion',
-    'Issue'
+    'Issue',
   ];
 
   @override
@@ -34,41 +34,43 @@ class _FeedbackComplaintScreenState extends State<FeedbackComplaintScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-showDialog(
-    context: context,
-    barrierDismissible: false, // prevents dismissing on outside touch
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        contentPadding: const EdgeInsets.all(20),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.check_circle_outline, color: Colors.green, size: 60),
-            const SizedBox(height: 15),
-            const Text(
-              'Thank You',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      showDialog(
+        context: context,
+        barrierDismissible: false, // prevents dismissing on outside touch
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'We\'ll get back to you soon',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+            contentPadding: const EdgeInsets.all(20),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.check_circle_outline, color: Colors.green, size: 60),
+                const SizedBox(height: 15),
+                const Text(
+                  'Thank You',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'We\'ll get back to you soon',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                  ),
+                  child: const Text('Close'),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       );
-    },
-  );
       // Perform submit logic
       // ScaffoldMessenger.of(context).showSnackBar(
       //   SnackBar(content: Text('Feedback/Complaint submitted successfully!')),
@@ -86,8 +88,9 @@ showDialog(
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: ConstrainedBox(
-            constraints:
-                BoxConstraints(maxWidth: screenWidth < 600 ? screenWidth : 500),
+            constraints: BoxConstraints(
+              maxWidth: screenWidth < 600 ? screenWidth : 500,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -190,12 +193,13 @@ showDialog(
                       child: const Text(
                         'Submit Feedback/Complaint',
                         style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

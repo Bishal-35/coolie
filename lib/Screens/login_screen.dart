@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rail_sahayak/Screens/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -65,9 +67,9 @@ class _LoginPageState extends State<LoginPage> {
       await FirebaseAuth.instance.signInWithCredential(credential);
       navigateToMainScreen();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid OTP. Try again.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Invalid OTP. Try again.')));
       setState(() => isLoading = false);
     }
   }
@@ -169,7 +171,6 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                       
                         TextButton(
                           onPressed: isLoading
                               ? null
@@ -190,11 +191,10 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: isLoading
                       ? null
                       : otpSent
-                          ? verifyOTP
-                          : () => sendOTP(),
+                      ? verifyOTP
+                      : () => sendOTP(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isLoading ? Colors.grey : Colors.redAccent,
+                    backgroundColor: isLoading ? Colors.grey : Colors.redAccent,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -209,6 +209,58 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
+              // Bypass Login Button - Commented out for production
+              /* 
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Skip login and go directly to main screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MainScreen(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.skip_next, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        "Skip Login (Dev Mode)",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Temporary Bypass Text
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Temporary bypass for development",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+              */
               SizedBox(height: 24),
               Text(
                 "You will receive a 6-digit code on your phone.",

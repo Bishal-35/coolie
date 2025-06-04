@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:rail_sahayak/Screens/contact_us_screen.dart';
 import 'package:rail_sahayak/Screens/feedback_complaint_screen.dart';
@@ -6,7 +5,7 @@ import 'package:rail_sahayak/Screens/order_screen.dart';
 import 'home_screen.dart'; // Make sure this is in your lib folder
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  const MainScreen({super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -26,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
     'Home',
     'Orders',
     'Contact Us',
-    'Complaint Feedback'
+    'Complaint Feedback',
   ];
 
   void _onItemTapped(int index) {
@@ -38,11 +37,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles[_selectedIndex]),
-        backgroundColor: Colors.redAccent,
-      ),
-      body: _screens[_selectedIndex],
+      // appBar: AppBar(
+      //   title: Text(_titles[_selectedIndex]),
+      //   backgroundColor: Colors.redAccent,
+      // ),
+      body: SafeArea(child: _screens[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         backgroundColor: Colors.white,
@@ -50,10 +49,7 @@ class _MainScreenState extends State<MainScreen> {
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
             label: 'Orders',

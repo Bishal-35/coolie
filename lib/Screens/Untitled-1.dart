@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rail_sahayak/Screens/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -65,9 +67,9 @@ class _LoginPageState extends State<LoginPage> {
       await FirebaseAuth.instance.signInWithCredential(credential);
       navigateToMainScreen();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid OTP. Try again.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Invalid OTP. Try again.')));
       setState(() => isLoading = false);
     }
   }
@@ -169,7 +171,6 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                       
                         TextButton(
                           onPressed: isLoading
                               ? null
@@ -190,11 +191,10 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: isLoading
                       ? null
                       : otpSent
-                          ? verifyOTP
-                          : () => sendOTP(),
+                      ? verifyOTP
+                      : () => sendOTP(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isLoading ? Colors.grey : Colors.redAccent,
+                    backgroundColor: isLoading ? Colors.grey : Colors.redAccent,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

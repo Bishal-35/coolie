@@ -1,4 +1,3 @@
-
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,11 @@ import 'package:rail_sahayak/Screens/main_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Ensure Firebase is initialized
+
+  // Add App Check configuration
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug, // Use .playIntegrity for production
+  );
 
   runApp(const MyApp());
 }

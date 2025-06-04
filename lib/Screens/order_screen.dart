@@ -35,11 +35,12 @@ class OrderScreen extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            CoolieBookingInfoScreen(bookingData: data),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          CoolieBookingInfoScreen(bookingData: data),
+                    ),
+                  );
                 },
                 child: Card(
                   margin: const EdgeInsets.all(12),
@@ -53,20 +54,28 @@ class OrderScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Coolie Requested",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20)),
+                        Text(
+                          "Coolie Requested",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
                         SizedBox(height: 4),
-                        Text("Status : Out to destination",
-                            style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold)),
+                        Text(
+                          "Status : Out to destination",
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         SizedBox(height: 4),
                         Text("Pickup : ${data['pickupPoint'] ?? 'N/A'}"),
                         Text("Drop : ${data['dropPoint'] ?? 'N/A'}"),
                         Align(
-                            alignment: Alignment.centerRight,
-                            child: Icon(Icons.arrow_forward_ios)),
+                          alignment: Alignment.centerRight,
+                          child: Icon(Icons.arrow_forward_ios),
+                        ),
                       ],
                     ),
                   ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rail_sahayak/Screens/main_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -28,7 +28,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
 
       if (mounted) {
         Navigator.pushAndRemoveUntil(
@@ -49,9 +51,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -67,10 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 10),
             const Text(
               "RailSahayak",
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -89,8 +88,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 hintText: "Name",
                 filled: true,
                 fillColor: Colors.white,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -103,8 +103,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 hintText: "Email",
                 filled: true,
                 fillColor: Colors.white,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -118,8 +119,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 hintText: "Password",
                 filled: true,
                 fillColor: Colors.white,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -140,8 +142,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 onPressed: isLoading ? null : _registerUser,
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Register",
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
+                    : const Text(
+                        "Register",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
               ),
             ),
 
@@ -162,9 +166,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: const Text(
                     "Login",
                     style: TextStyle(
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18),
+                      color: Colors.redAccent,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ],
