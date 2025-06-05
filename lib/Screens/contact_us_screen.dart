@@ -29,44 +29,140 @@ class ContactUsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.redAccent),
-              child: Text(
-                'Your RailSahayak',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+        elevation: 16.0,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                blurRadius: 10,
+                spreadRadius: 1,
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About Us'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.currency_rupee),
-              title: const Text('Pricing'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.cancel),
-              title: const Text('Cancellation'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginPage()),
-                  (route) => false,
-                );
-              },
-            ),
-          ],
+            ],
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.redAccent, Colors.red],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 30,
+                      child: Icon(
+                        Icons.train,
+                        color: Colors.redAccent,
+                        size: 36,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      'Your RailSahayak',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Your rail travel assistant',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Text(
+                  'MENU',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.info, color: Colors.redAccent),
+                title: const Text(
+                  'About Us',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                onTap: () => Navigator.pop(context),
+                tileColor: Colors.transparent,
+                hoverColor: Colors.redAccent.withOpacity(0.1),
+              ),
+              const SizedBox(height: 5),
+              ListTile(
+                leading: const Icon(
+                  Icons.currency_rupee,
+                  color: Colors.redAccent,
+                ),
+                title: const Text(
+                  'Pricing',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                onTap: () => Navigator.pop(context),
+                tileColor: Colors.transparent,
+                hoverColor: Colors.redAccent.withOpacity(0.1),
+              ),
+              const SizedBox(height: 5),
+              ListTile(
+                leading: const Icon(Icons.cancel, color: Colors.redAccent),
+                title: const Text(
+                  'Cancellation',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                onTap: () => Navigator.pop(context),
+                tileColor: Colors.transparent,
+                hoverColor: Colors.redAccent.withOpacity(0.1),
+              ),
+              const Divider(
+                height: 30,
+                thickness: 1,
+                indent: 16,
+                endIndent: 16,
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.redAccent),
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => LoginPage()),
+                    (route) => false,
+                  );
+                },
+                tileColor: Colors.transparent,
+                hoverColor: Colors.redAccent.withOpacity(0.1),
+              ),
+            ],
+          ),
         ),
       ),
       appBar: AppBar(
