@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
-            label: 'Orders',
+            label: 'Bookings',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.contact_phone),

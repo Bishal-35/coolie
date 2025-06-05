@@ -4,9 +4,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:rail_sahayak/Screens/TrainTimingsScreen.dart';
 import 'package:rail_sahayak/Screens/amenities.dart';
 import 'package:rail_sahayak/Screens/book_coolie.dart';
+import 'package:rail_sahayak/Screens/wheel_chair.dart';
 import 'package:rail_sahayak/Screens/food_services.dart';
 import 'package:rail_sahayak/Screens/login_screen.dart';
 import 'package:rail_sahayak/Screens/on_duty_staff_screen.dart';
+import 'package:rail_sahayak/Screens/four_wheeler_cart.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -111,15 +113,26 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(4.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min, // Set to minimize vertical space
             children: [
               iconOrImage is IconData
-                  ? Icon(iconOrImage, color: Colors.redAccent, size: 32)
-                  : Image.asset(iconOrImage, width: 32, height: 32),
-              const SizedBox(height: 8),
+                  ? Icon(
+                      iconOrImage,
+                      color: Colors.redAccent,
+                      size: 28,
+                    ) // Reduced size slightly
+                  : Image.asset(iconOrImage, width: 28, height: 28),
+              const SizedBox(height: 4), // Reduced spacing
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                maxLines: 2, // Limit to 2 lines
+                overflow:
+                    TextOverflow.ellipsis, // Add ellipsis for text overflow
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12, // Smaller font size
+                ),
               ),
             ],
           ),
@@ -165,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.redAccent),
               child: Text(
-                'RailSahayak Menu',
+                'Your RailSahayak',
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
@@ -437,11 +450,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(builder: (_) => BookCoolie()),
                 );
               }),
-              buildServiceCard("Wheel Chair", Icons.accessible, () {}),
-              buildServiceCard("4-Wheeler Cart", Icons.electric_rickshaw, () {
-                ScaffoldMessenger.of(
+              buildServiceCard("Wheel Chair", Icons.accessible, () {
+                Navigator.push(
                   context,
-                ).showSnackBar(const SnackBar(content: Text("Coming Soon")));
+                  MaterialPageRoute(builder: (_) => WheelChair()),
+                );
+              }),
+              buildServiceCard("4-Wheeler Cart", Icons.electric_rickshaw, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => FourWheelerCart()),
+                );
               }),
               // buildServiceCard("Retiring Room", Icons.hotel, _bookRetiringRoom),
               buildServiceCard("Food Services", Icons.restaurant, () {
@@ -461,6 +480,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 ).showSnackBar(const SnackBar(content: Text("Coming Soon")));
               }),
               buildServiceCard("Passenger Help", Icons.person, _ondutystaff),
+              buildServiceCard(
+                "Passenger Ticketing Facilities",
+                Icons.wallet_travel_sharp,
+                () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Coming Soon",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  );
+                },
+              ),
               buildServiceCard("More Services", Icons.more_horiz, () {
                 ScaffoldMessenger.of(
                   context,

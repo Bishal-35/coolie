@@ -28,8 +28,61 @@ class TrainTimingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Train Timings for $stationName Station'),
-        backgroundColor: Colors.orange.shade700,
+        centerTitle: false,
+        titleSpacing: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: Icon(Icons.train, color: Colors.white, size: 28),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Train Timings for $stationName Station',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'UP and DN train schedules',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color.fromARGB(255, 221, 221, 221),
+                      fontWeight: FontWeight.w300,
+                    ),
+                    maxLines: 4,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.redAccent,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(5)),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8.0),
+          child: Container(
+            height: 6.0,
+            decoration: const BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(5)),
+            ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -58,31 +111,43 @@ class TrainTimingsScreen extends StatelessWidget {
                   children: const [
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text('UP Trains Numbers',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.brown)),
+                      child: Text(
+                        'UP Trains Numbers',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown,
+                        ),
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text('Departure Time',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.brown)),
+                      child: Text(
+                        'Departure Time',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown,
+                        ),
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text('DN Trains Numbers',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.brown)),
+                      child: Text(
+                        'DN Trains Numbers',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown,
+                        ),
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text('Departure Time',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.brown)),
+                      child: Text(
+                        'Departure Time',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -106,9 +171,9 @@ class TrainTimingsScreen extends StatelessWidget {
                         child: Text(downTrains[i][1]),
                       ),
                     ],
-                  )
+                  ),
               ],
-            )
+            ),
           ],
         ),
       ),

@@ -150,50 +150,99 @@ class _AmenitiesScreenState extends State<AmenitiesScreen> {
   }
 
   void _showAmenityDialog(String title, String description) {
+    // Parse the description to separate individual bullet points
+    List<String> bulletPoints = description
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .map(
+          (line) => line.trim().startsWith('•')
+              ? line.substring(1).trim()
+              : line.trim(),
+        )
+        .toList();
+
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: const Color(0xFFFFFDE7),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         contentPadding: const EdgeInsets.all(20),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.info_outline, color: Colors.orange),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.brown,
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.info_outline, color: Colors.orange),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.brown,
+                      ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(Icons.close, color: Colors.black54),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(description, style: const TextStyle(fontSize: 14)),
-            const SizedBox(height: 16),
-            Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
-                  foregroundColor: Colors.black,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text("Close"),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Icon(Icons.close, color: Colors.black54),
+                  ),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              const Divider(color: Colors.brown, height: 1),
+              const SizedBox(height: 16),
+
+              // Display each bullet point with proper styling and dynamic bullets
+              ...bulletPoints
+                  .map(
+                    (point) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 6, right: 8),
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: Colors.brown,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              point,
+                              style: const TextStyle(fontSize: 14, height: 1.4),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Close"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -205,8 +254,57 @@ class _AmenitiesScreenState extends State<AmenitiesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Passenger Amenities at ${widget.stationName} Station"),
+        centerTitle: false,
+        titleSpacing: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Passenger Amenities at ${widget.stationName} Station",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Find all available facilities at the station',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color.fromARGB(255, 221, 221, 221),
+                      fontWeight: FontWeight.w300,
+                    ),
+                    maxLines: 4,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         backgroundColor: Colors.redAccent,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(5)),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8.0),
+          child: Container(
+            height: 6.0,
+            decoration: const BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(5)),
+            ),
+          ),
+        ),
       ),
       body: amenityDescriptions.isEmpty
           ? const Center(child: Text("No data available for this station"))

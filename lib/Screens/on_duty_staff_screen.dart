@@ -201,7 +201,7 @@ class _OnDutyStaffScreenState extends State<OnDutyStaffScreen> {
                     staff[0],
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Colors.brown,
                     ),
                   ),
@@ -212,10 +212,55 @@ class _OnDutyStaffScreenState extends State<OnDutyStaffScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            Text('Name: ${staff[1]}', style: const TextStyle(fontSize: 14)),
-            const SizedBox(height: 8),
-            Text('Contact: ${staff[2]}', style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 16),
+            const Divider(color: Colors.brown, height: 1),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 6, right: 8),
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      color: Colors.brown,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Name: ${staff[1]}',
+                      style: const TextStyle(fontSize: 14, height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 6, right: 8),
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      color: Colors.brown,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Contact: ${staff[2]}',
+                      style: const TextStyle(fontSize: 14, height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerRight,
@@ -223,6 +268,10 @@ class _OnDutyStaffScreenState extends State<OnDutyStaffScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.amber,
                   foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text("Close"),
@@ -238,8 +287,61 @@ class _OnDutyStaffScreenState extends State<OnDutyStaffScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Staff at ${widget.stationName} Station'),
+        centerTitle: false,
+        titleSpacing: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: Icon(Icons.people, color: Colors.white, size: 28),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Staff at ${widget.stationName} Station',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Contact station staff for assistance',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color.fromARGB(255, 221, 221, 221),
+                      fontWeight: FontWeight.w300,
+                    ),
+                    maxLines: 4,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         backgroundColor: Colors.redAccent,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(5)),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8.0),
+          child: Container(
+            height: 6.0,
+            decoration: const BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(5)),
+            ),
+          ),
+        ),
       ),
       body: staffData.isEmpty
           ? const Center(child: Text("No data available for this station"))
@@ -258,14 +360,14 @@ class _OnDutyStaffScreenState extends State<OnDutyStaffScreen> {
                   return GestureDetector(
                     onTap: () => _showStaffDialog(index),
                     child: Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.shade200,
-                            blurRadius: 5,
+                            blurRadius: 4,
                             offset: const Offset(2, 2),
                           ),
                         ],
@@ -274,12 +376,11 @@ class _OnDutyStaffScreenState extends State<OnDutyStaffScreen> {
                       child: Center(
                         child: Text(
                           staff[0],
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.brown,
-                            fontSize: 14,
                           ),
-                          textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),

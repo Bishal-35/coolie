@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CoolieBookingInfoScreen extends StatefulWidget {
+class WheelchairBookingInfoScreen extends StatefulWidget {
   final Map<String, dynamic> bookingData;
 
-  const CoolieBookingInfoScreen({super.key, required this.bookingData});
+  const WheelchairBookingInfoScreen({super.key, required this.bookingData});
 
   @override
-  _CoolieBookingInfoScreenState createState() =>
-      _CoolieBookingInfoScreenState();
+  _WheelchairBookingInfoScreenState createState() =>
+      _WheelchairBookingInfoScreenState();
 }
 
-class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
+class _WheelchairBookingInfoScreenState
+    extends State<WheelchairBookingInfoScreen> {
   void _makePhoneCall(String phoneNumber) async {
     final Uri url = Uri(scheme: 'tel', path: phoneNumber);
     if (await canLaunchUrl(url)) {
@@ -26,7 +27,7 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
     final bookingId = widget.bookingData['doc_id'];
     if (bookingId != null) {
       await FirebaseFirestore.instance
-          .collection('coolie_bookings')
+          .collection('wheelchair_bookings')
           .doc(bookingId)
           .update({'status': newStatus});
     }
@@ -48,7 +49,7 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
             ),
           ),
           content: Text(
-            "Are you sure you want to cancel your booking?",
+            "Are you sure you want to cancel your wheelchair booking?",
             style: TextStyle(fontSize: 16),
           ),
           actions: [
@@ -77,7 +78,9 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
                   // Show confirmation that order status was updated
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Booking successfully cancelled'),
+                      content: Text(
+                        'Wheelchair booking successfully cancelled',
+                      ),
                       backgroundColor: Colors.deepOrange,
                       duration: Duration(seconds: 3),
                       behavior: SnackBarBehavior.floating,
@@ -101,13 +104,13 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final bookingId = widget.bookingData['doc_id'];
-    final phoneNumber = widget.bookingData['coolie_number'] ?? '';
+    final phoneNumber = widget.bookingData['phone'] ?? '';
 
     return Scaffold(
-      appBar: AppBar(title: Text("Coolie Information")),
+      appBar: AppBar(title: Text("Wheelchair Booking Information")),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('coolie_bookings')
+            .collection('wheelchair_bookings')
             .doc(bookingId)
             .snapshots(),
         builder: (context, snapshot) {
@@ -118,7 +121,15 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
 
           if (data == null) return Center(child: Text("No data found."));
 
-          final currentStatus = data['status'] ?? 'Arriving at the Location';
+          final currentStatus = data['status'] ?? 'Preparing';
+
+          // Format the journey date
+          String journeyDate = '';
+          if (data['journeyDate'] != null) {
+            final timestamp = data['journeyDate'] as Timestamp;
+            final date = timestamp.toDate();
+            journeyDate = "${date.day}/${date.month}/${date.year}";
+          }
 
           return SingleChildScrollView(
             padding: EdgeInsets.all(16),
@@ -126,7 +137,7 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
               children: [
                 SizedBox(height: 12),
 
-                /// Dynamic Status and Phone Call
+                // Dynamic Status and Phone Call
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -160,39 +171,37 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
                 ),
 
                 SizedBox(height: 12),
-                infoRow(
-                  Icons.person,
-                  "Coolie Name : ${data['coolie_name'] ?? ''}",
-                ),
+                infoRow(Icons.person, "Name : ${data['name'] ?? ''}"),
+                infoRow(Icons.phone, "Phone : ${data['phone'] ?? ''}"),
                 infoRow(
                   Icons.confirmation_number,
-                  "Batch Id : ${data['coolie_bill_number'] ?? ''}",
+                  "PNR : ${data['pnr'] ?? 'Not provided'}",
                 ),
+                infoRow(Icons.train, "Train : ${data['train'] ?? ''}"),
                 infoRow(
-                  Icons.train,
-                  "Coach Number : ${data['coachNumber'] ?? ''}",
+                  Icons.airline_seat_recline_normal_outlined,
+                  "Coach : ${data['coach'] ?? 'Not provided'}, Seat: ${data['seat'] ?? 'Not provided'}",
                 ),
-                infoRow(Icons.access_time, "${data['time'] ?? ''}"),
+                infoRow(Icons.calendar_today, "Journey Date : $journeyDate"),
+                infoRow(
+                  Icons.access_time,
+                  "Arrival Time : ${data['arrivalTime'] ?? ''}",
+                ),
                 infoRow(
                   Icons.location_on,
-                  "Pickup ${data['pickupPoint'] ?? ''}",
+                  "Platform : ${data['platform'] ?? ''}",
                 ),
-                infoRow(Icons.currency_rupee, "${data['fee'] ?? ''}"),
-                infoRow(Icons.assignment, "${data['Category'] ?? 'COOLIE'}"),
-                infoRow(
-                  Icons.location_on_outlined,
-                  "Drop Point : ${data['dropPoint'] ?? ''}",
-                ),
-                infoRow(Icons.line_weight, "Weight : ${data['weight'] ?? ''}"),
-                infoRow(
-                  Icons.confirmation_number_rounded,
-                  "Booking Id: ${data['Booking Id'] ?? ''}",
-                ),
-                infoRow(Icons.train, "Train Name: ${data['trainName'] ?? ''}"),
+                if (data['specialInstructions'] != null &&
+                    data['specialInstructions'].toString().isNotEmpty)
+                  infoRow(
+                    Icons.notes,
+                    "Special Instructions : ${data['specialInstructions']}",
+                  ),
+                infoRow(Icons.place, "Station : ${data['station'] ?? ''}"),
                 SizedBox(height: 20),
 
-                /// Action Button based on Status
-                if (currentStatus == 'Arriving at Your Location')
+                // Action Button based on Status
+                if (currentStatus == 'pending')
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -203,14 +212,14 @@ class _CoolieBookingInfoScreenState extends State<CoolieBookingInfoScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () => _updateStatus('Coolie Arrived'),
+                      onPressed: () => _updateStatus('Wheelchair Assigned'),
                       child: Text(
-                        "Coolie Arrived",
+                        "Wheelchair Assigned",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   )
-                else if (currentStatus == 'Coolie Arrived')
+                else if (currentStatus == 'Wheelchair Assigned')
                   SizedBox(
                     width: double.infinity,
                     height: 48,
