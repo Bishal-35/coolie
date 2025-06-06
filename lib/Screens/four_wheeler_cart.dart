@@ -173,7 +173,7 @@ class _FourWheelerCartState extends State<FourWheelerCart> {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Book 4-Wheeler Cart for luggage',
+                    'Book 4-Wheeler Cart for Passengers',
                     style: TextStyle(
                       fontSize: 13,
                       color: Color.fromARGB(255, 221, 221, 221),
@@ -518,10 +518,8 @@ class _FourWheelerCartState extends State<FourWheelerCart> {
                               SizedBox(
                                 height: 20,
                                 child: const Text(
-                                  'Number of Luggage Items',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  'Number of Passengers',
+                                  style: TextStyle(fontSize: 14),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -542,7 +540,7 @@ class _FourWheelerCartState extends State<FourWheelerCart> {
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter number of luggage items';
+                                      return 'Please enter number of passengers';
                                     }
                                     return null;
                                   },
@@ -563,9 +561,7 @@ class _FourWheelerCartState extends State<FourWheelerCart> {
                                 height: 20,
                                 child: const Text(
                                   'Platform Number',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: TextStyle(fontSize: 14),
                                 ),
                               ),
                               const SizedBox(height: 8),
